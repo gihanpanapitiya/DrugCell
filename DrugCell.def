@@ -14,6 +14,7 @@ From: pytorch/pytorch:1.12.0-cuda11.3-cudnn8-devel
 	apt-get install build-essential -y
 	apt-get install git -y
 	apt-get install vim -y
+	apt-get install subversion -y
 
 	chmod +x Singularity_gpu_fix.sh
         ./Singularity_gpu_fix.sh
@@ -25,9 +26,9 @@ From: pytorch/pytorch:1.12.0-cuda11.3-cudnn8-devel
 
 
 	python3 -m pip install networkx
-
 	python3 -m pip install git+https://github.com/ECP-CANDLE/candle_lib@develop
 
+	cd /usr/local
 	git clone https://github.com/gihanpanapitiya/DrugCell.git
 	cd DrugCell
 	git checkout to_candle
