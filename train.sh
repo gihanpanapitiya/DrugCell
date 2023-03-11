@@ -11,6 +11,7 @@
 
 ### Path to your CANDLEized model's main Python script###
 # CANDLE_MODEL=/usr/local/DrugCell/train_drugcell.py
+#CANDLE_MODEL=/usr/local/DrugCell/DrugCell_baseline_pytorch.py
 CANDLE_MODEL=/usr/local/DrugCell/drugcell_baseline_pytorch.py
 
 if [ $# -lt 2 ] ; then
