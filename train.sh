@@ -10,7 +10,8 @@
 # arg 3 CANDLE_CONFIG
 
 ### Path to your CANDLEized model's main Python script###
-CANDLE_MODEL=/usr/local/DrugCell/train_drugcell.py
+# CANDLE_MODEL=/usr/local/DrugCell/train_drugcell.py
+CANDLE_MODEL=/usr/local/DrugCell/drugcell_baseline_pytorch.py
 
 if [ $# -lt 2 ] ; then
         echo "Illegal number of parameters"
