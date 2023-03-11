@@ -15,6 +15,7 @@ import time
 import candle
 import json
 from scipy.stats import spearmanr
+from sklearn.metrics import mean_squared_error
 
 
 
@@ -271,7 +272,8 @@ def train_model(root, term_size_map, term_direct_gene_map, dG, train_data, gene_
 
         test_corr = pearson_corr(test_predicted, test_label_gpu)
         test_spear = spearmanr(test_predicted_cpu, test_label_cpu)[0]
-        
+        mse = mean_squared_error(test_predicted_cpu, test_label_cpu)
+
         # print('labels')
         # print(test_predicted_cpu)
         # print(test_label_cpu)
@@ -279,7 +281,7 @@ def train_model(root, term_size_map, term_direct_gene_map, dG, train_data, gene_
         print('test sp:', test_spear)
         # print('test_predicted:', test_predicted)
         # print('test_label_gpu:', test_label_gpu)
-        test_scores = {"pcc": test_corr.cpu().numpy().item(),
+        test_scores = {"val_loss": mse,  "pcc": test_corr.cpu().numpy().item(),
                         "spearmanr": test_spear}
 
         # gihan
@@ -370,8 +372,8 @@ def run(opt):
     print('IMPROVE_RESULT RMSE val_loss:\t' + str(test_scores['pcc'] ))
 
     infer_scores, df_infer = predict_dcell(opt, data_path)
-    with open(opt['output_dir'] + "/scores_infer.json", "w", encoding="utf-8") as f:
-        json.dump(infer_scores, f, ensure_ascii=False, indent=4)
+#     with open(opt['output_dir'] + "/scores_infer.json", "w", encoding="utf-8") as f:
+#         json.dump(infer_scores, f, ensure_ascii=False, indent=4)
     print('IMPROVE_RESULT RMSE (INFER):\t', infer_scores)
     df_infer.to_csv(opt['output_dir'] + "/test_predictions.csv", index=False)
 
