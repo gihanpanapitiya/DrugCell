@@ -278,11 +278,13 @@ def train_model(root, term_size_map, term_direct_gene_map, dG, train_data, gene_
         # print(test_predicted_cpu)
         # print(test_label_cpu)
         
+        print('MSE: ', mse)
         print('test sp:', test_spear)
         # print('test_predicted:', test_predicted)
         # print('test_label_gpu:', test_label_gpu)
-        test_scores = {"val_loss": mse,  "pcc": test_corr.cpu().numpy().item(),
-                        "spearmanr": test_spear}
+        test_scores = {"val_loss": str(mse),
+         "pcc": str(test_corr.cpu().numpy().item()),
+         "spearmanr": str(test_spear) }
 
         # gihan
         # with open( os.path.join(model_save_folder,"test_scores.json"), "w", encoding="utf-8") as f:
@@ -366,8 +368,9 @@ def run(opt):
     test_scores = train_model(root, term_size_map, term_direct_gene_map, dG, train_data, num_genes, drug_dim, modeldir, epoch, \
     batchsize, lr, num_hiddens_genotype, num_hiddens_drug, num_hiddens_final, cell_features, drug_features)
 
-
-    with open(opt['output_dir'] + "/scores_val.json", "w", encoding="utf-8") as f:
+    print("TEST SCORES")
+    print(test_scores)
+    with open(opt['output_dir'] + "/scores.json", "w", encoding="utf-8") as f:
         json.dump(test_scores, f, ensure_ascii=False, indent=4)
     print('IMPROVE_RESULT RMSE val_loss:\t' + str(test_scores['pcc'] ))
 
