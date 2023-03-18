@@ -21,6 +21,10 @@ from sklearn.metrics import mean_squared_error
 
 file_path = os.path.dirname(os.path.realpath(__file__))
 additional_definitions = [
+    {'name': 'config_file',
+     'type': str,
+     'help': '...'
+     },
     {'name': 'data_path',
      'type': str,
      'help': '...'

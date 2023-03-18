@@ -21,3 +21,4 @@ cuda_id=0
 data_url = 'https://github.com/JDACS4C-IMPROVE/DrugCell/trunk/data'
 download_data = True
 train_subset = None
+config_file = None
