@@ -313,7 +313,7 @@ def run(opt):
 
     data_url = opt['data_url']
     download_data = opt['download_data']
-    base_path=os.path.join(CANDLE_DATA_DIR, gParameters['model_name'], 'Data')
+    base_path=os.path.join(CANDLE_DATA_DIR, opt['model_name'], 'Data')
     get_data(data_url, base_path, download_data)
     data_path = base_path
     
