@@ -414,9 +414,9 @@ def initialize_parameters():
 
 if __name__ == '__main__':
 
-    gParameters = initialize_parameters()
-    print(gParameters)
-    val_scores, infer_scores = run(gParameters)
+    opt = initialize_parameters()
+    print(opt)
+    val_scores, infer_scores = run(opt)
 
 
     print("Done.")
