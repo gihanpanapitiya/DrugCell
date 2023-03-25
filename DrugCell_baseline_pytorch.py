@@ -382,8 +382,9 @@ def run(opt):
 #     with open(opt['output_dir'] + "/scores_infer.json", "w", encoding="utf-8") as f:
 #         json.dump(infer_scores, f, ensure_ascii=False, indent=4)
     print('IMPROVE_RESULT RMSE (INFER):\t', infer_scores)
+    print(f"Writing the predictions to {opt['output_dir']} test_predictions.csv")
     df_infer.to_csv(opt['output_dir'] + "/test_predictions.csv", index=False)
-
+    print("Predictions saved")
 
 
     return test_scores, infer_scores
