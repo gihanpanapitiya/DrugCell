@@ -41,7 +41,6 @@ additional_definitions = [
      'type': str,
      'help': '...'
      },
-
     {'name': 'infer',
      'type': str,
      'help': '.....'
