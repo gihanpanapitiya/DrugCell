@@ -16,7 +16,7 @@ import candle
 import json
 from scipy.stats import spearmanr
 from sklearn.metrics import mean_squared_error
-
+from sklearn.model_selection import train_test_split
 
 
 file_path = os.path.dirname(os.path.realpath(__file__))
@@ -93,9 +93,11 @@ additional_definitions = [
     {'name': 'train_subset',
      'type': int,
      'help': '.....'
+     },
+    {'name': 'data_split_seed',
+     'type': int,
+     'help': '.....'
      }
-
-     
 ]
 
 required = None
@@ -307,6 +309,24 @@ def get_data(data_url, cache_subdir, download=True):
         print('downloading done') 
 
 
+def new_split_train_test(opt, data_path):
+    train = os.path.join(data_path, opt['train'])  
+    test = os.path.join(data_path, opt['test']) # for validation
+    infer = os.path.join(data_path, opt['infer'])
+
+    train_df = pd.read_csv(train, header=None, delimiter='\t')
+    val_df = pd.read_csv(test, header=None, delimiter='\t')
+    test_df = pd.read_csv(infer, header=None, delimiter='\t')
+    df = pd.concat([train_df,val_df,test_df], axis=0)
+    df.reset_index(drop=True, inplace=True)
+
+    train, test = train_test_split(df, test_size=0.2, random_state=opt['data_split_seed'])
+    val, test = train_test_split(test, test_size=0.5, random_state=opt['data_split_seed'])
+
+    train.to_csv(opt['output_dir']+'/train.txt', sep='\t', index=False, header=None)
+    val.to_csv(opt['output_dir']+'/val.txt', sep='\t', index=False, header=None)
+    test.to_csv(opt['output_dir']+'/test.txt', sep='\t', index=False, header=None)
+
 
 def run(opt):
 #     data_path=opt['data_path']
@@ -318,8 +338,15 @@ def run(opt):
     data_path = base_path
     
     onto = os.path.join(data_path, opt['onto'])
-    train = os.path.join(data_path, opt['train'])  
-    test = os.path.join(data_path, opt['test']) 
+#     train = os.path.join(data_path, opt['train'])  
+#     test = os.path.join(data_path, opt['test']) # for validation
+#     infer = os.path.join(data_path, opt['infer'])
+    new_split_train_test(opt, data_path)
+    train = os.path.join(opt['output_dir']+'/train.txt')  
+    test = os.path.join(opt['output_dir']+'/val.txt') # for validation
+    infer = os.path.join(opt['output_dir']+'/test.txt')
+
+
     epoch = int(opt['epochs'])
     lr = float(opt['lr'])
     batchsize = int(opt['batchsize'])
@@ -378,7 +405,7 @@ def run(opt):
         json.dump(test_scores, f, ensure_ascii=False, indent=4)
     print('IMPROVE_RESULT RMSE val_loss:\t' + str(test_scores['pcc'] ))
 
-    infer_scores, df_infer = predict_dcell(opt, data_path)
+    infer_scores, df_infer = predict_dcell(opt, data_path, infer)
 #     with open(opt['output_dir'] + "/scores_infer.json", "w", encoding="utf-8") as f:
 #         json.dump(infer_scores, f, ensure_ascii=False, indent=4)
     print('IMPROVE_RESULT RMSE (INFER):\t', infer_scores)

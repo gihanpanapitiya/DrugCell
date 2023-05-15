@@ -106,6 +106,22 @@ def load_train_data(file_name, cell2id, drug2id, train_subset):
 	return feature, label
 
 
+# instead of reading train/test data from file, pass the dataframe
+def load_train_data_from_df(file_name, cell2id, drug2id, train_subset):
+	feature = []
+	label = []
+
+	with open(file_name, 'r') as fi:
+		for il, line in enumerate(fi):
+			tokens = line.strip().split('\t')
+
+			feature.append([cell2id[tokens[0]], drug2id[tokens[1]]])
+			label.append([float(tokens[2])])
+			if train_subset and il == train_subset:
+				break
+	return feature, label
+
+
 def prepare_predict_data(test_file, cell2id_mapping_file, drug2id_mapping_file, train_subset):
 
 	# load mapping files
@@ -163,9 +179,10 @@ def build_input_vector(input_data, cell_features, drug_features):
 
 
 
-def predict_dcell(opt, data_path):
+def predict_dcell(opt, data_path, infer_path):
 	
-	predict = os.path.join(data_path, opt['infer'] )
+	# predict = os.path.join(data_path, opt['infer'] )
+	predict = infer_path
 	
 	gene2id = os.path.join( data_path, opt['gene2id'] )
 	drug2id = os.path.join( data_path, opt['drug2id'] )
@@ -240,6 +257,7 @@ def predict_dcell(opt, data_path):
 		else:
 			test_predict = torch.cat([test_predict, aux_out_map['final'].data], dim=0)
 
+		# print("test_predict::: ", aux_out_map['final'].data)
 		for term, hidden_map in term_hidden_map.items():
 			hidden_file = hidden_folder+'/'+term+'.hidden'
 			with open(hidden_file, 'ab') as f:
