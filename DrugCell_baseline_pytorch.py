@@ -299,13 +299,16 @@ def train_model(root, term_size_map, term_direct_gene_map, dG, train_data, gene_
 
 
 def get_data(data_url, cache_subdir, download=True):
-    print('downloading data')
+    
     # cache_subdir = os.path.join(CANDLE_DATA_DIR, 'SWnet', 'Data')
     
     if download:
+        print('downloading data')
         os.makedirs(cache_subdir, exist_ok=True)
         os.system(f'svn checkout {data_url} {cache_subdir}')   
         print('downloading done') 
+    else:
+        print('not downloading. data already present')
 
 
 def new_split_train_test(opt, data_path):
@@ -434,7 +437,7 @@ def initialize_parameters():
                                             # defmodel="graphdrp_model_candle.txt",
                             framework="pytorch",
                             prog="DrugCell",
-                            desc="CANDLE compliant GraphDRP",
+                            desc="CANDLE compliant DrugCell",
                                 )
     gParameters = candle.finalize_parameters(drugcell_params)
     return gParameters
