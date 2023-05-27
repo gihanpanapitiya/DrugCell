@@ -19,7 +19,7 @@ from pathlib import Path
 import improve_utils
 import candle
 import urllib.request
-import urllib.request 
+from sklearn.model_selection import train_test_split
 
 
 
@@ -42,7 +42,7 @@ def get_drug_response_data(df, metric):
 
     return data_smiles_df
 
-def preprocess(opt):
+def preprocess_ccle(opt):
 
     data_path = os.path.join(CANDLE_DATA_DIR, opt['model_name'], 'Data')
     get_data(opt['data_url'], os.path.join(data_path, 'dc_original'), True)
@@ -60,21 +60,21 @@ def preprocess(opt):
         os.mkdir( y_data_dir  )
     
 
-    # for file in ['CCLE_all.txt', 'CCLE_split_0_test.txt', 'CCLE_split_0_train.txt', 'CCLE_split_0_val.txt']:
-    #     urllib.request.urlretrieve(f'https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/csa_data/splits/{file}',
-    #     splits_dir+f'/{file}')
+    for file in ['CCLE_all.txt', 'CCLE_split_0_test.txt', 'CCLE_split_0_train.txt', 'CCLE_split_0_val.txt']:
+        urllib.request.urlretrieve(f'https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/csa_data/splits/{file}',
+        splits_dir+f'/{file}')
 
-    # for file in ['cancer_mutation_count.txt', 'drug_SMILES.txt','drug_ecfp4_512bit.txt' ]:
-    #     urllib.request.urlretrieve(f'https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/csa_data/x_data/{file}',
-    #     x_data_dir+f'/{file}')
+    for file in ['cancer_mutation_count.txt', 'drug_SMILES.txt','drug_ecfp4_512bit.txt' ]:
+        urllib.request.urlretrieve(f'https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/csa_data/x_data/{file}',
+        x_data_dir+f'/{file}')
 
-    # for file in ['response.txt']:
-    #     urllib.request.urlretrieve(f'https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/csa_data/y_data/{file}',
-    #     y_data_dir+f'/{file}')
+    for file in ['response.txt']:
+        urllib.request.urlretrieve(f'https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/csa_data/y_data/{file}',
+        y_data_dir+f'/{file}')
 
 
- 
-    data_type = opt['data_type']    #'CCLE'
+    if opt['data_type']=='ccle_candle':
+        data_type = 'CCLE'   #'CCLE'
     metric = opt['metric']
 
 
@@ -108,12 +108,21 @@ def preprocess(opt):
 
 
     train_df = get_drug_response_data(rs_train, metric)
-    train_df.to_csv(train_file, header=None, index=None, sep ='\t')
-
     test_df = get_drug_response_data(rs_test, metric)
-    test_df.to_csv(test_file, header=None, index=None, sep ='\t')
-
     val_df = get_drug_response_data(rs_val, metric)
+    all_df = pd.concat([train_df, val_df, test_df], axis=0)
+    all_df = all_df.sort_values(by='improve_sample_id')
+    all_df.reset_index(drop=True, inplace=True)
+
+    if opt['data_split_seed']>-1:
+        train_df, val_df = train_test_split(all_df, test_size=0.2, random_state = opt['data_split_seed'])
+        test_df, val_df = train_test_split(val_df, test_size=0.5, random_state = opt['data_split_seed'])
+        train_df.reset_index(drop=True, inplace=True)
+        test_df.reset_index(drop=True, inplace=True)
+        val_df.reset_index(drop=True, inplace=True)
+
+    train_df.to_csv(train_file, header=None, index=None, sep ='\t')
+    test_df.to_csv(test_file, header=None, index=None, sep ='\t')
     val_df.to_csv(val_file, header=None, index=None, sep ='\t')
 
 
@@ -210,10 +219,10 @@ def initialize_parameters():
     gParameters = candle.finalize_parameters(drugcell_params)
     return gParameters
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    opt = initialize_parameters()
-    gene_list = preprocess(opt)
+#     opt = initialize_parameters()
+#     gene_list = preprocess(opt)
     
 
 

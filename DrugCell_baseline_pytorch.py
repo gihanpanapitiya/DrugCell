@@ -17,7 +17,7 @@ import json
 from scipy.stats import spearmanr
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
-
+from preprocess import preprocess_ccle
 
 file_path = os.path.dirname(os.path.realpath(__file__))
 additional_definitions = [
@@ -311,42 +311,48 @@ def get_data(data_url, cache_subdir, download=True):
         print('not downloading. data already present')
 
 
-def new_split_train_test(opt, data_path):
-    train = os.path.join(data_path, opt['train'])  
-    test = os.path.join(data_path, opt['test']) # for validation
-    infer = os.path.join(data_path, opt['infer'])
+# def new_split_train_test(opt, data_path):
+#     train = os.path.join(data_path, opt['train'])  
+#     test = os.path.join(data_path, opt['test']) # for validation
+#     infer = os.path.join(data_path, opt['infer'])
 
-    train_df = pd.read_csv(train, header=None, delimiter='\t')
-    val_df = pd.read_csv(test, header=None, delimiter='\t')
-    test_df = pd.read_csv(infer, header=None, delimiter='\t')
-    df = pd.concat([train_df,val_df,test_df], axis=0)
-    df.reset_index(drop=True, inplace=True)
+#     train_df = pd.read_csv(train, header=None, delimiter='\t')
+#     val_df = pd.read_csv(test, header=None, delimiter='\t')
+#     test_df = pd.read_csv(infer, header=None, delimiter='\t')
+#     df = pd.concat([train_df,val_df,test_df], axis=0)
+#     df.reset_index(drop=True, inplace=True)
 
-    train, test = train_test_split(df, test_size=0.2, random_state=opt['data_split_seed'])
-    val, test = train_test_split(test, test_size=0.5, random_state=opt['data_split_seed'])
+#     train, test = train_test_split(df, test_size=0.2, random_state=opt['data_split_seed'])
+#     val, test = train_test_split(test, test_size=0.5, random_state=opt['data_split_seed'])
 
-    train.to_csv(opt['output_dir']+'/train.txt', sep='\t', index=False, header=None)
-    val.to_csv(opt['output_dir']+'/val.txt', sep='\t', index=False, header=None)
-    test.to_csv(opt['output_dir']+'/test.txt', sep='\t', index=False, header=None)
+#     train.to_csv(opt['output_dir']+'/train.txt', sep='\t', index=False, header=None)
+#     val.to_csv(opt['output_dir']+'/val.txt', sep='\t', index=False, header=None)
+#     test.to_csv(opt['output_dir']+'/test.txt', sep='\t', index=False, header=None)
+
 
 
 def run(opt):
 #     data_path=opt['data_path']
 
-    data_url = opt['data_url']
-    download_data = opt['download_data']
     base_path=os.path.join(CANDLE_DATA_DIR, opt['model_name'], 'Data')
-    get_data(data_url, base_path, download_data)
     data_path = base_path
+
+    if opt['data_type']=='ccle_candle':
+        preprocess_ccle(opt)
+    else:
+        data_url = opt['data_url']
+        download_data = opt['download_data']
+        get_data(data_url, base_path, download_data)
+
     
     onto = os.path.join(data_path, opt['onto'])
-#     train = os.path.join(data_path, opt['train'])  
-#     test = os.path.join(data_path, opt['test']) # for validation
-#     infer = os.path.join(data_path, opt['infer'])
-    new_split_train_test(opt, data_path)
-    train = os.path.join(opt['output_dir']+'/train.txt')  
-    test = os.path.join(opt['output_dir']+'/val.txt') # for validation
-    infer = os.path.join(opt['output_dir']+'/test.txt')
+    train = os.path.join(data_path, opt['train'])  
+    test = os.path.join(data_path, opt['test']) # for validation
+    infer = os.path.join(data_path, opt['infer'])
+#     new_split_train_test(opt, data_path)
+#     train = os.path.join(opt['output_dir']+'/train.txt')  
+#     test = os.path.join(opt['output_dir']+'/val.txt') # for validation
+#     infer = os.path.join(opt['output_dir']+'/test.txt')
 
 
     epoch = int(opt['epochs'])
