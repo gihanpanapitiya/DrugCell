@@ -265,8 +265,8 @@ def predict_dcell(opt, data_path, infer_path):
 
 		batch_num += 1
 
-	df_res = pd.DataFrame(zip(infer_data.loc[:, 'drug_name'], predict_label.detach().cpu().numpy().ravel().tolist(),
-	 test_predict.detach().cpu().numpy().ravel().tolist()), columns=['smiles', 'true', 'pred'])
+	df_res = pd.DataFrame(zip(infer_data.loc[:, 'drug_name'] ,predict_label.detach().cpu().numpy().ravel().tolist(),
+	 test_predict.detach().cpu().numpy().ravel().tolist()), columns=['smiles',  'true', 'pred'])
 	test_corr = pearson_corr(test_predict, predict_label_gpu)
 	test_corr = test_corr.cpu().numpy().item()
 	test_predict_cpu = test_predict.cpu().numpy()
