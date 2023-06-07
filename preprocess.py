@@ -18,6 +18,7 @@ import networkx.algorithms.dag as nxadag
 from pathlib import Path
 import improve_utils
 import candle
+import urllib
 import urllib.request
 from sklearn.model_selection import train_test_split
 
@@ -42,10 +43,26 @@ def get_drug_response_data(df, metric):
 
     return data_smiles_df
 
+
+
+def get_data(data_url, cache_subdir, download=True, svn=False):
+    print('downloading data')
+    # cache_subdir = os.path.join(CANDLE_DATA_DIR, 'SWnet', 'Data')
+    
+    if download and svn:
+        os.makedirs(cache_subdir, exist_ok=True)
+        os.system(f'svn checkout {data_url} {cache_subdir}')   
+        print('downloading done') 
+    elif download and svn==False:
+        os.makedirs(cache_subdir, exist_ok=True)
+        urllib.request.urlretrieve('https://raw.githubusercontent.com/idekerlab/DrugCell/public/data/cell2ind.txt', f'{cache_subdir}/cell2ind.txt')
+        urllib.request.urlretrieve('https://raw.githubusercontent.com/idekerlab/DrugCell/public/data/drugcell_ont.txt', f'{cache_subdir}/drugcell_ont.txt')
+
+        #  
 def preprocess_ccle(opt):
 
     data_path = os.path.join(CANDLE_DATA_DIR, opt['model_name'], 'Data')
-    get_data(opt['data_url'], os.path.join(data_path, 'dc_original'), True)
+    get_data(data_url=opt['data_url'], cache_subdir=os.path.join(data_path, 'dc_original'), download=True, svn=False)
     
     csa_data_folder = os.path.join(CANDLE_DATA_DIR, opt['model_name'], 'Data', 'csa_data', 'raw_data')
     splits_dir = os.path.join(csa_data_folder, 'splits') 
@@ -187,14 +204,7 @@ def create_ont(ont_in, ont_out, gene_list):
     ont_cat_df.to_csv(ont_out, sep='\t', index=None, header=None)
 
 
-def get_data(data_url, cache_subdir, download=True):
-    print('downloading data')
-    # cache_subdir = os.path.join(CANDLE_DATA_DIR, 'SWnet', 'Data')
-    
-    if download:
-        os.makedirs(cache_subdir, exist_ok=True)
-        os.system(f'svn checkout {data_url} {cache_subdir}')   
-        print('downloading done') 
+
 
 
 class DrugCell_candle(candle.Benchmark):
