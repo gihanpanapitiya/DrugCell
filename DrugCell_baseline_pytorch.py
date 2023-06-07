@@ -232,7 +232,7 @@ def train_model(root, term_size_map, term_direct_gene_map, dG, train_data, gene_
                 #if epoch % 10 == 0:model_save_folder = os.path.join(CANDLE_DATA_DIR,model_save_folder)
                 model_save_folder = os.path.join(CANDLE_DATA_DIR, model_save_folder)  # gihan
                 os.makedirs(model_save_folder, exist_ok=True)  # gihan
-                torch.save(model, model_save_folder + '/model_' + str(epoch) + '.pt')
+                # torch.save(model, model_save_folder + '/model_' + str(epoch) + '.pt')
 
                 #Test: random variables in training mode become static
                 model.eval()
@@ -262,14 +262,16 @@ def train_model(root, term_size_map, term_direct_gene_map, dG, train_data, gene_
                 if test_corr >= max_corr:
                         max_corr = test_corr
                         best_model = epoch
+                        torch.save(model, model_save_folder + '/model_best' + '.pt')
 
-        torch.save(model, model_save_folder + '/model_final.pt')        
+        # torch.save(model, model_save_folder + '/model_final.pt')        
 
         print("Best performed model (epoch)\t%d" % best_model)
 
 
-        model_best = torch.load(model_save_folder + '/model_' + str(best_model) + '.pt') # gihan
-        torch.save(model_best, model_save_folder + '/model_best.pt') # gihan
+        model_best = torch.load(model_save_folder + '/model_best' + '.pt') # gihan
+        # model_best = torch.load(model_save_folder + '/model_' + str(best_model) + '.pt') # gihan
+        # torch.save(model_best, model_save_folder + '/model_best.pt') # gihan
 
         test_predicted = eval_model(model_best, test_loader, cell_features, drug_features, CUDA_ID)
         test_predicted_cpu = test_predicted.cpu().numpy()

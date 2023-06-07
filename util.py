@@ -258,10 +258,12 @@ def predict_dcell(opt, data_path, infer_path):
 			test_predict = torch.cat([test_predict, aux_out_map['final'].data], dim=0)
 
 		# print("test_predict::: ", aux_out_map['final'].data)
-		for term, hidden_map in term_hidden_map.items():
-			hidden_file = hidden_folder+'/'+term+'.hidden'
-			with open(hidden_file, 'ab') as f:
-				np.savetxt(f, hidden_map.data.cpu().numpy(), '%.4e')
+		# suppressing the writing of these hidden files - gihan
+		# for term, hidden_map in term_hidden_map.items():
+		# 	hidden_file = hidden_folder+'/'+term+'.hidden'
+		# 	with open(hidden_file, 'ab') as f:
+		# 		np.savetxt(f, hidden_map.data.cpu().numpy(), '%.4e')
+		# suppressing the writing of these hidden files - gihan
 
 		batch_num += 1
 
