@@ -428,7 +428,7 @@ def run(opt):
     print('IMPROVE_RESULT RMSE val_loss:\t' + str(test_scores['pcc'] ))
 
     infer_scores, df_infer = predict_dcell(opt, data_path, infer)
-    infer_data = pd.read_csv('tmp/DrugCell/Data/drugcell_test.txt', header=None, sep='\t')
+    infer_data = pd.read_csv(os.path.join(data_path,'drugcell_test.txt'), header=None, sep='\t')
     infer_data.columns = ['cell_line_id','drug_id', 'labels']
     df_infer = pd.concat([df_infer, infer_data], axis=1)
 #     with open(opt['output_dir'] + "/scores_infer.json", "w", encoding="utf-8") as f:
