@@ -25,6 +25,10 @@ additional_definitions = [
      'type': str,
      'help': '...'
      },
+     {'name': 'epochs',
+     'type': int,
+     'help': '...'
+     },
     {'name': 'data_path',
      'type': str,
      'help': '...'
