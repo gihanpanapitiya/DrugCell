@@ -158,6 +158,7 @@ def train_model(root, term_size_map, term_direct_gene_map, dG, train_data, gene_
         epoch_start_time = time.time()
         best_model = 0
         max_corr = 0
+        best_mse = 1e8
 
         # dcell neural network
         model = drugcell_nn(term_size_map, term_direct_gene_map, dG, gene_dim, drug_dim, root, num_hiddens_genotype, num_hiddens_drug, num_hiddens_final)
@@ -253,16 +254,23 @@ def train_model(root, term_size_map, term_direct_gene_map, dG, train_data, gene_
 
 
                         test_corr = pearson_corr(test_predict, test_label_gpu)
+                        test_mse = mean_squared_error(y_pred=test_predict.cpu(), y_true = test_label_gpu.cpu())
 
                 epoch_end_time = time.time()
                 print("epoch\t%d\tcuda_id\t%d\ttrain_corr\t%.6f\tval_corr\t%.6f\ttotal_loss\t%.6f\telapsed_time\t%s" % (epoch, CUDA_ID, train_corr, test_corr, \
                 total_loss, epoch_end_time-epoch_start_time))
                 epoch_start_time = epoch_end_time
-        
-                if test_corr >= max_corr:
-                        max_corr = test_corr
+
+                # if test_corr >= max_corr:
+                #         max_corr = test_corr
+                #         best_model = epoch
+                #         torch.save(model, model_save_folder + '/model_best' + '.pt')
+
+                if test_mse <= best_mse:
+                        best_mse = test_mse
                         best_model = epoch
                         torch.save(model, model_save_folder + '/model_best' + '.pt')
+
 
         # torch.save(model, model_save_folder + '/model_final.pt')        
 
