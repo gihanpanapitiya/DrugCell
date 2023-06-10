@@ -100,6 +100,10 @@ additional_definitions = [
     {'name': 'data_split_seed',
      'type': int,
      'help': '.....'
+     },
+    {'name': 'download_data',
+     'type': bool,
+     'help': '.....'
      }
 ]
 
