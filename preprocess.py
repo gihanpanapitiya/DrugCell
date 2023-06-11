@@ -98,8 +98,8 @@ def preprocess_ccle(opt):
 
 
     train_file =  os.path.join(data_path, opt['train']) #"drugcell_train.txt"
-    test_file =  os.path.join(data_path,opt['test'])   #"drugcell_test.txt"
-    val_file =  os.path.join(data_path,opt['infer'] )  #"drugcell_val.txt"
+    val_file =  os.path.join(data_path,opt['test'])   #"drugcell_val.txt"
+    test_file =  os.path.join(data_path,opt['infer'] )  #"drugcell_test.txt"
 
 
     drug_index_out = os.path.join(data_path,opt['drug2id'])
@@ -193,7 +193,7 @@ def preprocess_ccle(opt):
     print('onto in', onto_in, 'onto out', onto_out)
     create_ont(onto_in, onto_out, gene_list) 
 
-    return gene_list
+    return gene_list, train_df, test_df, val_df
 
 def create_ont(ont_in, ont_out, gene_list):
     ont_df = pd.read_csv(ont_in, sep='\t', header=None)

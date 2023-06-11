@@ -355,7 +355,7 @@ def run(opt):
     data_path = base_path
 
     if opt['data_type']=='ccle_candle':
-        preprocess_ccle(opt)
+        gene_list, train_df, test_df, val_df = preprocess_ccle(opt)
     else:
         data_url = opt['data_url']
         download_data = opt['download_data']
@@ -363,9 +363,16 @@ def run(opt):
 
     
     onto = os.path.join(data_path, opt['onto'])
-    train = os.path.join(data_path, opt['train'])  
-    test = os.path.join(data_path, opt['test']) # for validation
-    infer = os.path.join(data_path, opt['infer'])
+    read_train_data_from_file=False
+    if read_train_data_from_file:
+        train = os.path.join(data_path, opt['train'])  
+        test = os.path.join(data_path, opt['test']) # for validation
+        infer = os.path.join(data_path, opt['infer'])
+    else:
+        train = train_df
+        test = val_df
+        infer = test_df
+
 #     new_split_train_test(opt, data_path)
 #     train = os.path.join(opt['output_dir']+'/train.txt')  
 #     test = os.path.join(opt['output_dir']+'/val.txt') # for validation

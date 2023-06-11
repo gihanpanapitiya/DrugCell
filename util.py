@@ -95,31 +95,26 @@ def load_train_data(file_name, cell2id, drug2id, train_subset):
 	feature = []
 	label = []
 
-	with open(file_name, 'r') as fi:
-		for il, line in enumerate(fi):
-			tokens = line.strip().split('\t')
+	if isinstance(file_name, pd.DataFrame):
+		file_name = file_name.values.tolist()
 
+		for tokens in file_name:
 			feature.append([cell2id[tokens[0]], drug2id[tokens[1]]])
 			label.append([float(tokens[2])])
-			if train_subset and il == train_subset:
-				break
+
+	else:
+		with open(file_name, 'r') as fi:
+			for il, line in enumerate(fi):
+				tokens = line.strip().split('\t')
+
+				feature.append([cell2id[tokens[0]], drug2id[tokens[1]]])
+				label.append([float(tokens[2])])
+				if train_subset and il == train_subset:
+					break
+
 	return feature, label
 
 
-# instead of reading train/test data from file, pass the dataframe
-def load_train_data_from_df(file_name, cell2id, drug2id, train_subset):
-	feature = []
-	label = []
-
-	with open(file_name, 'r') as fi:
-		for il, line in enumerate(fi):
-			tokens = line.strip().split('\t')
-
-			feature.append([cell2id[tokens[0]], drug2id[tokens[1]]])
-			label.append([float(tokens[2])])
-			if train_subset and il == train_subset:
-				break
-	return feature, label
 
 
 def prepare_predict_data(test_file, cell2id_mapping_file, drug2id_mapping_file, train_subset):
@@ -201,15 +196,27 @@ def predict_dcell(opt, data_path, infer_path):
 
 	# getting drug and cell names
 	infer_data=[]
-	with open(predict, 'r') as fi:
-		for il, line in enumerate(fi):
-			tokens = line.strip().split('\t')
+
+	if isinstance(predict, pd.DataFrame):
+		fi = predict.values.tolist()
+		for tokens in fi:
 			cell_name = tokens[0]
 			drug_name = tokens[1]
 			cell_id = cell2id_mapping[cell_name]
 			drug_id = drug2id_mapping[drug_name]
 
 			infer_data.append([cell2id, cell_name, drug_id, drug_name])
+	else:
+		with open(predict, 'r') as fi:
+			for il, line in enumerate(fi):
+				tokens = line.strip().split('\t')
+				cell_name = tokens[0]
+				drug_name = tokens[1]
+				cell_id = cell2id_mapping[cell_name]
+				drug_id = drug2id_mapping[drug_name]
+
+				infer_data.append([cell2id, cell_name, drug_id, drug_name])
+				
 	infer_data = pd.DataFrame(infer_data, columns=['cell2id', 'cell_name', 'drug_id', 'drug_name'])
 	# getting drug and cell names
 
