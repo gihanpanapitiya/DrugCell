@@ -51,20 +51,7 @@ def get_drug_response_data(df, metric):
     return data_smiles_df
 
 
-# def get_data(data_url, cache_subdir, download=True, svn=False):
-#     print('downloading data')
-#     # cache_subdir = os.path.join(CANDLE_DATA_DIR, 'SWnet', 'Data')
-    
-#     if download and svn:
-#         os.makedirs(cache_subdir, exist_ok=True)
-#         os.system(f'svn checkout {data_url} {cache_subdir}')   
-#         print('downloading done') 
-#     elif download and svn==False:
-#         os.makedirs(cache_subdir, exist_ok=True)
-#         # urllib.request.urlretrieve('https://raw.githubusercontent.com/idekerlab/DrugCell/public/data/cell2ind.txt', f'{cache_subdir}/cell2ind.txt')
-#         urllib.request.urlretrieve('https://raw.githubusercontent.com/idekerlab/DrugCell/public/data/drugcell_ont.txt', f'{cache_subdir}/drugcell_ont.txt')
 
-        #  
 
 
 def preprocess_ccle(opt):
@@ -89,17 +76,17 @@ def preprocess_ccle(opt):
         for file in ['CCLE_all.txt', 'CCLE_split_0_test.txt', 'CCLE_split_0_train.txt', 'CCLE_split_0_val.txt']:
             # url = f'https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/csa_data/splits/{file}'
             # save_request_file(url=url, save_loc=splits_dir+f'/{file}')
-            urllib.request.urlretrieve(f'https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/csa_data/splits/{file}',
+            urllib.request.urlretrieve(f'https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-imp-2023/csa_data/splits/{file}',
             splits_dir+f'/{file}')
 
         for file in ['cancer_mutation_count.txt', 'drug_SMILES.txt','drug_ecfp4_512bit.txt' ]:
             # url=f'https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/csa_data/x_data/{file}'
             # save_request_file(url=url, save_loc=x_data_dir+f'/{file}')
-            urllib.request.urlretrieve(f'https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/csa_data/x_data/{file}',
+            urllib.request.urlretrieve(f'https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-imp-2023/csa_data/x_data/{file}',
             x_data_dir+f'/{file}')
 
         for file in ['response.txt']:
-            urllib.request.urlretrieve(f'https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/csa_data/y_data/{file}',
+            urllib.request.urlretrieve(f'https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-imp-2023/csa_data/y_data/{file}',
             y_data_dir+f'/{file}')
 
 
@@ -265,42 +252,6 @@ def download_ccle_data(opt):
             y_data_dir+f'/{file}')
 
 
-
-
-
-
-
-# class DrugCell_candle(candle.Benchmark):
-
-#         def set_locals(self):
-#             if required is not None:
-#                 self.required = set(required)
-#             if additional_definitions is not None:
-#                 self.additional_definitions = additional_definitions
-
-# def initialize_parameters():
-#     """ Initialize the parameters for the GraphDRP benchmark. """
-#     print("Initializing parameters\n")
-#     drugcell_params = DrugCell_candle(
-#                             filepath=file_path,
-#                             defmodel="drugcell_model.txt",
-#                                             # defmodel="graphdrp_model_candle.txt",
-#                             framework="pytorch",
-#                             prog="DrugCell",
-#                             desc="CANDLE compliant GraphDRP",
-#                                 )
-#     gParameters = candle.finalize_parameters(drugcell_params)
-#     return gParameters
-
-
-
-
-
-# if __name__ == '__main__':
-
-#     opt = initialize_parameters()
-#     gene_list = preprocess(opt)
-    
 
 
 
