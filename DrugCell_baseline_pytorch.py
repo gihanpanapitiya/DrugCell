@@ -103,6 +103,9 @@ additional_definitions = [
      }, 
 {'name': 'download_data',
      'type': bool
+     },
+     {'name': 'metric',
+     'type': str
      }
 ]
 
